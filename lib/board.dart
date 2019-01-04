@@ -6,7 +6,7 @@ import 'package:memory/gameController.dart';
 
 const int _timerMillis = 1500;
 const int max_rounds = 3;
-
+const int maxCards = 6;
 
 enum TileState {found, open, covered}
 
@@ -49,6 +49,8 @@ class BoardState extends State<Board> {
   List<List<TileState>> uiState;
   List<List<int>> tileValue;
 
+  List<int> shuffeledNumbers;
+
   @override
   void initState() {
     resetBoard();
@@ -84,7 +86,7 @@ class BoardState extends State<Board> {
             child: Listener(
               child: MemoryCard(
                 tileState: state,
-                value: tileValue[x][y],
+                value: shuffeledNumbers.elementAt(tileValue[x][y]-1), //tileValue[x][y],
                 posX: x,
                 posY: y,
                 selectedMemoryType: selectedMemoryType,
@@ -96,7 +98,7 @@ class BoardState extends State<Board> {
           rowChildren.add(
               MemoryCard(
                 tileState: state,
-                value: tileValue[x][y],
+                value: shuffeledNumbers.elementAt(tileValue[x][y]-1), //tileValue[x][y],
                 posX: x,
                 posY: y,
                 selectedMemoryType: selectedMemoryType,
@@ -231,9 +233,11 @@ class BoardState extends State<Board> {
     secondY = null;
 
     int fields = rows * cols;
+    double differentNumbers = (rows*cols)/2;
 
     int counter = 0;
     int number = 1;
+    shuffeledNumbers = new List<int>.generate(maxCards, (i) => i + 1);
     List<int> numbers;
     numbers = new List<int>.generate(fields, (entry) {
       if (counter > 0 && counter % 2 == 0) {
@@ -242,6 +246,13 @@ class BoardState extends State<Board> {
       counter++;
       return number;
     });
+
+    debugPrint(shuffeledNumbers.toString());
+    shuffeledNumbers.shuffle();
+    debugPrint(shuffeledNumbers.toString());
+    shuffeledNumbers = shuffeledNumbers.sublist(0, differentNumbers.round());
+    debugPrint(shuffeledNumbers.toString());
+
     debugPrint(numbers.toString());
     numbers.shuffle();
     debugPrint(numbers.toString());
