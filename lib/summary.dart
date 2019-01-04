@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'board.dart';
-import 'home.dart';
+import 'gameController.dart';
 
 class Summary extends StatelessWidget {
 
   final int stars;
   final int points;
-  final int difficulty;
-  final MemoryType nextMemoryType;
-  final MemoryType currentMemoryType;
+  final bool isLastLevel;
 
-  Summary(this.stars, this.points, this.difficulty, this.nextMemoryType, this.currentMemoryType, {Key key}) : super(key: key);
+  Summary(this.stars, this.points, this.isLastLevel, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +55,7 @@ class Summary extends StatelessWidget {
                         onPressed: () {goToCurrentLevel(context);}
                     ),
                     IconButton(
-                        icon: Icon(nextMemoryType != null ? Icons.fast_forward : Icons.home, color: Colors.grey[600],),
+                        icon: Icon(!isLastLevel ? Icons.fast_forward : Icons.home, color: Colors.grey[600],),
                         iconSize: 70.0,
                         padding: EdgeInsets.fromLTRB(30.0, 0.0, 0.0, 0.0),
                         onPressed: () {goToNextLevel(context);}
@@ -74,29 +71,15 @@ class Summary extends StatelessWidget {
   }
 
   void goToCurrentLevel(BuildContext context) {
-    Navigator.pushReplacement(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => new Board(difficulty, currentMemoryType)
-        )
-    );
+    GameController.of(context).goToCurrentLevel();
   }
 
   void goToNextLevel(BuildContext context) {
-    if (nextMemoryType != null) {
-      Navigator.pushReplacement(
-          context,
-          new MaterialPageRoute(
-              builder: (context) => new Board(difficulty, nextMemoryType)
-          )
-      );
+    if (isLastLevel) {
+      GameController.of(context).goToHomeScreen();
     } else {
-      Navigator.pushReplacement(
-          context,
-          new MaterialPageRoute(
-              builder: (context) => new HomeScreen()
-          )
-      );
+      GameController.of(context).goToNextLevel();
     }
+
   }
 }

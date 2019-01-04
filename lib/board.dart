@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'dart:async';
 
-import 'package:memory/summary.dart';
+import 'package:memory/gameController.dart';
 
 const int _timerMillis = 1500;
 const int max_rounds = 3;
 
-enum MemoryType {number, pokemon, pawpatrol}
+
 enum TileState {found, open, covered}
 
 class Board extends StatefulWidget {
@@ -167,8 +167,8 @@ class BoardState extends State<Board> {
           secondX = x;
           secondY = y;
         }
-        debugPrint('first: ' + '$firstValue');
-        debugPrint('second: ' + '$secondValue');
+        //debugPrint('first: ' + '$firstValue');
+        //debugPrint('second: ' + '$secondValue');
       }
     });
     if (turnedCards == 2) {
@@ -194,13 +194,13 @@ class BoardState extends State<Board> {
             bool allFound = true;
             for (int x = 0 ; x < rows; x++) {
               for (int y = 0; y < cols; y++) {
-                debugPrint('uiState[ ' + x.toString() + '][' + y.toString() + ']=' + (uiState[x][y]).toString());
+                //debugPrint('uiState[ ' + x.toString() + '][' + y.toString() + ']=' + (uiState[x][y]).toString());
                 if (uiState[x][y] != TileState.found) {
                   allFound = false;
                 }
               }
             }
-            debugPrint('allfound: ' + allFound.toString());
+            //debugPrint('allfound: ' + allFound.toString());
             if (allFound) {
               goToSummary(context);
             }
@@ -209,13 +209,6 @@ class BoardState extends State<Board> {
       });
     }
 
-  }
-
-  void _resetGame() {
-    debugPrint('_resetGame');
-    resetBoard();
-    setState(() {
-    });
   }
 
   void resetBoard() {
@@ -267,24 +260,12 @@ class BoardState extends State<Board> {
     debugPrint(tileValue.toString());
   }
 
-  MemoryType getNextMemoryType() {
-     if (selectedMemoryType == MemoryType.pawpatrol) {
-        return MemoryType.pokemon;
-      } else if (selectedMemoryType == MemoryType.pokemon) {
-        return MemoryType.number;
-      }
-      return null;
-  }
+
 
   void goToSummary(BuildContext context) {
     debugPrint('goToSummary');
     int stars = determineStars();
-    Navigator.pushReplacement(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => new Summary(stars, moves, difficulty, getNextMemoryType(), selectedMemoryType)
-        )
-    );
+    GameController.of(context).goToSummary(stars, moves);
   }
 
   int determineStars() {

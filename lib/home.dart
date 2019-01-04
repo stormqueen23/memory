@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'board.dart';
+import 'gameController.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -56,21 +56,25 @@ class HomeScreen extends StatelessWidget {
   }
 
   void navigateTo(BuildContext context, int difficulty) {
+
     Navigator.push(
         context,
         new MaterialPageRoute(
-            builder: (context) => new Board(difficulty, MemoryType.pawpatrol)
+            builder: (context) => new GameController(difficulty)
         )
     );
   }
 
   void setEasy(BuildContext context) {
     navigateTo(context, 1);
+    //GameController.of(context).startGame(1);
   }
   void setNormal(BuildContext context) {
-    navigateTo(context, 2);
+   // GameController.of(context).startGame(2);
+   navigateTo(context, 2);
   }
   void setHard(BuildContext context) {
+    //GameController.of(context).startGame(3);
     navigateTo(context, 3);
   }
 
