@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
+
 import 'board.dart';
+import 'home.dart';
 import 'summary.dart';
 
-enum ScreenType {game, highscore}
-enum MemoryType {number, pokemon, pawpatrol}
+enum ScreenType { game, highscore }
+enum MemoryType { first, second, third }
 
 class GameController extends StatefulWidget {
 
@@ -18,7 +19,8 @@ class GameController extends StatefulWidget {
   }
 
   static GameState of(BuildContext context) {
-    final GameState navigator = context.ancestorStateOfType(const TypeMatcher<GameState>());
+    final GameState navigator = context.ancestorStateOfType(
+        const TypeMatcher<GameState>());
 
     assert(() {
       if (navigator == null) {
@@ -35,7 +37,7 @@ class GameController extends StatefulWidget {
 
 class GameState extends State<GameController> {
   ScreenType currentScreen = ScreenType.game;
-  MemoryType currentMemoryType = MemoryType.pawpatrol;
+  MemoryType currentMemoryType = MemoryType.first;
 
   int difficulty;
 
@@ -88,10 +90,10 @@ class GameState extends State<GameController> {
   }
 
   MemoryType getNextMemoryType() {
-    if (currentMemoryType == MemoryType.pawpatrol) {
-      return MemoryType.pokemon;
-    } else if (currentMemoryType == MemoryType.pokemon) {
-      return MemoryType.number;
+    if (currentMemoryType == MemoryType.first) {
+      return MemoryType.second;
+    } else if (currentMemoryType == MemoryType.second) {
+      return MemoryType.third;
     }
     return null;
   }

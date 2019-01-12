@@ -1,14 +1,17 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'dart:async';
 
 import 'package:memory/gameController.dart';
+import 'package:memory/boardUI.dart';
 
 const int _timerMillis = 1500;
 const int max_rounds = 3;
-const int maxCards = 6;
+const int maxDinoCards = 15;
 
-enum TileState {found, open, covered}
+
 
 class Board extends StatefulWidget {
   final int difficulty;
@@ -18,10 +21,14 @@ class Board extends StatefulWidget {
 
   @override
   BoardState createState() {
-    return new BoardState(difficulty, type); }
+    return new BoardState(difficulty, type);
+  }
 }
 
 class BoardState extends State<Board> {
+  double width;
+  double height;
+
   final int difficulty;
   final MemoryType selectedMemoryType;
 
@@ -45,7 +52,6 @@ class BoardState extends State<Board> {
   int secondX;
   int secondY;
 
-
   List<List<TileState>> uiState;
   List<List<int>> tileValue;
 
@@ -53,113 +59,123 @@ class BoardState extends State<Board> {
 
   @override
   void initState() {
+
     resetBoard();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    double cardSize = determineCardSize();
+    debugPrint('width: ' + width.toString());
+    debugPrint('height: ' + height.toString());
+
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text('$moves', style: new TextStyle(fontSize: 30.0),),
+          title: new Text(
+            '$moves',
+            style: new TextStyle(fontSize: 30.0),
+          ),
           centerTitle: true,
+          backgroundColor: Colors.green,
         ),
         body: new Container(
-          color: Colors.blue,
-          child: buildBoardUI(),
-        )
-    );
+          child: buildBoardUI(cardSize),
+        ));
   }
 
-  Widget buildBoardUI() {
+  double determineCardSize() {
+    double result = 80.0;
+
+    double spaceForHeight = height - ((rows * 2 * margin) + 180);
+    double spaceForWidth = width - ((cols * 2 * margin) + 20);
+    debugPrint('spaceForHeight ' + spaceForHeight.toString());
+    debugPrint('spaceForWidth ' + spaceForWidth.toString());
+
+    double heightPerCard =  spaceForHeight / rows;
+    double widthPerCard = spaceForWidth / cols;
+    debugPrint('heightPerCard ' + heightPerCard.toString());
+    debugPrint('widthPerCard ' + widthPerCard.toString());
+    result = min(heightPerCard, widthPerCard);
+    result = min(result, 200);
+    debugPrint('cardSize:  ' + result.toString());
+    return result;
+  }
+
+  Widget buildBoardUI(double cardSize) {
     debugPrint('buildBoard');
+
     List<Row> boardRow = <Row>[];
-    for (int x = 0 ; x < rows; x++) {
+    for (int x = 0; x < rows; x++) {
       List<Widget> rowChildren = <Widget>[];
       for (int y = 0; y < cols; y++) {
         TileState state = uiState[x][y];
-        if (state == TileState.covered || state == TileState.open) {
-          rowChildren.add(GestureDetector(
-            onTap: () {
-              move(x,y);
-            },
-            child: Listener(
-              child: MemoryCard(
-                tileState: state,
-                value: shuffeledNumbers.elementAt(tileValue[x][y]-1), //tileValue[x][y],
-                posX: x,
-                posY: y,
-                selectedMemoryType: selectedMemoryType,
+        if (state == TileState.covered) {
+          rowChildren.add(
+            GestureDetector(
+              onTap: () {
+                move(x, y);
+              },
+              child: Listener(
+                child: MemoryCard(
+                  tileState: state,
+                  value: shuffeledNumbers.elementAt(tileValue[x][y] - 1),
+                  //tileValue[x][y],
+                  posX: x,
+                  posY: y,
+                  size: cardSize,
+                  selectedMemoryType: selectedMemoryType,
+                ),
               ),
             ),
-          ),
           );
         } else {
-          rowChildren.add(
-              MemoryCard(
-                tileState: state,
-                value: shuffeledNumbers.elementAt(tileValue[x][y]-1), //tileValue[x][y],
-                posX: x,
-                posY: y,
-                selectedMemoryType: selectedMemoryType,
-              )
-          );
+          rowChildren.add(MemoryCard(
+            tileState: state,
+            value: shuffeledNumbers.elementAt(tileValue[x][y] - 1),
+            //tileValue[x][y],
+            posX: x,
+            posY: y,
+            size: cardSize,
+            selectedMemoryType: selectedMemoryType,
+          ));
         }
       }
-      boardRow.add(Row (
+      boardRow.add(Row(
         children: rowChildren,
         mainAxisAlignment: MainAxisAlignment.center,
         key: ValueKey<int>(x),
       ));
     }
     Widget main = Container(
-      color: new Color(0xFFE3F2FD),
       padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       //padding: EdgeInsets.all(10.0),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: boardRow,
       ),
     );
     return Container(
-        color: new Color(0xFFE3F2FD),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            image: DecorationImage(
+                image: AssetImage('assets/forest.png'),
+                fit: BoxFit.fitHeight,
+                colorFilter: ColorFilter.mode(
+                    Colors.white.withOpacity(0.75), BlendMode.dstATop))),
         padding: EdgeInsets.all(10.0),
-        child: Column(
-            children: <Widget>[
-              main
-              //RaisedButton (
-              //  child: Text ('Neues Spiel'),
-              //onPressed: _resetGame
-              //),
-            ]
-        )
-    );
-  }
-
-  Widget buildOpenMemoryCard(Widget child) {
-    return Container(
-      margin: EdgeInsets.all(4.0),
-      height: 100.0,
-      width: 100.0,
-      color: Colors.grey,
-      child: child,
-    );
-  }
-
-  Widget buildCoveredMemoryCard(Widget child) {
-    return Container(
-      margin: EdgeInsets.all(4.0),
-      height: 100.0,
-      width: 100.0,
-      color: Colors.grey,
-      child: child,
-    );
+        child: Center(
+          child: main,
+        ));
   }
 
   void move(int x, int y) {
     setState(() {
       if (uiState[x][y] == TileState.covered && turnedCards < 2) {
         uiState[x][y] = TileState.open;
-        turnedCards ++;
+        turnedCards++;
         if (turnedCards == 1) {
           firstValue = tileValue[x][y];
           firstX = x;
@@ -194,7 +210,7 @@ class BoardState extends State<Board> {
             turnedCards = 0;
 
             bool allFound = true;
-            for (int x = 0 ; x < rows; x++) {
+            for (int x = 0; x < rows; x++) {
               for (int y = 0; y < cols; y++) {
                 //debugPrint('uiState[ ' + x.toString() + '][' + y.toString() + ']=' + (uiState[x][y]).toString());
                 if (uiState[x][y] != TileState.found) {
@@ -210,7 +226,6 @@ class BoardState extends State<Board> {
         });
       });
     }
-
   }
 
   void resetBoard() {
@@ -222,6 +237,9 @@ class BoardState extends State<Board> {
     } else if (difficulty == 2) {
       rows = 4;
       cols = 3;
+    } else if (difficulty == 3) {
+      rows = 6;
+      cols = 4;
     }
     turnedCards = 0;
     moves = 0;
@@ -233,15 +251,15 @@ class BoardState extends State<Board> {
     secondY = null;
 
     int fields = rows * cols;
-    double differentNumbers = (rows*cols)/2;
+    double differentNumbers = (rows * cols) / 2;
 
     int counter = 0;
     int number = 1;
-    shuffeledNumbers = new List<int>.generate(maxCards, (i) => i + 1);
+    shuffeledNumbers = new List<int>.generate(maxDinoCards, (i) => i + 1);
     List<int> numbers;
     numbers = new List<int>.generate(fields, (entry) {
       if (counter > 0 && counter % 2 == 0) {
-        number ++;
+        number++;
       }
       counter++;
       return number;
@@ -262,7 +280,7 @@ class BoardState extends State<Board> {
     tileValue = new List<List<int>>.generate(rows, (row) {
       return new List<int>.generate(cols, (col) {
         int index;
-        index = (row+col) + ((cols-1)*row);
+        index = (row + col) + ((cols - 1) * row);
         debugPrint(index.toString());
         //print(col);
         return numbers[index];
@@ -271,8 +289,6 @@ class BoardState extends State<Board> {
     debugPrint(tileValue.toString());
   }
 
-
-
   void goToSummary(BuildContext context) {
     debugPrint('goToSummary');
     int stars = determineStars();
@@ -280,8 +296,8 @@ class BoardState extends State<Board> {
   }
 
   int determineStars() {
-    double cards = (rows*cols)/2;
-    double diff = (100/cards)*(moves-cards);
+    double cards = (rows * cols) / 2;
+    double diff = (100 / cards) * (moves - cards);
     debugPrint('diff for stars: ' + diff.toString());
     if (diff >= 0 && diff < 81) {
       return 3;
@@ -295,89 +311,4 @@ class BoardState extends State<Board> {
   }
 }
 
-class MemoryCard extends StatelessWidget {
-  final TileState tileState;
-  final int value;
 
-  final int posX;
-  final int posY;
-
-  final MemoryType selectedMemoryType;
-
-  MemoryCard(
-      {this.tileState, this.value, this.posX, this.posY, this.selectedMemoryType});
-
-  @override
-  @override
-  Widget build(BuildContext context) {
-    Widget card;
-    String pre;
-    String imagePath;
-    String coveredImagePath;
-
-    if (selectedMemoryType == MemoryType.number) {
-      //no images yet
-    } else if (selectedMemoryType == MemoryType.pokemon) {
-      pre = 'graphics/p-';
-    } else if (selectedMemoryType == MemoryType.pawpatrol) {
-      pre = 'graphics/pp-';
-    }
-    if (pre != null) {
-      coveredImagePath = pre + 'back.png';
-      imagePath = pre + value.toString() + '.png';
-    }
-
-    if (tileState == TileState.open || tileState == TileState.found) {
-      if (imagePath != null) {
-        card = new Container(
-            color: tileState == TileState.open ? Colors.black12 : Colors.white,
-            child: new DecoratedBox(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(imagePath),
-                        fit: BoxFit.scaleDown
-                    )
-                )
-            ));
-      } else {
-        card = new Container(
-            color: tileState == TileState.open ? Colors.black12 : Colors.white,
-            child: new Center (
-              child: new Text(value.toString(),
-                style: TextStyle(fontWeight: FontWeight.bold),
-                textScaleFactor: 2.0,),
-            )
-        );
-      }
-    } else if (tileState == TileState.covered) {
-      if (coveredImagePath != null) {
-        card = new Container(
-            color: Colors.black45,
-            child: new DecoratedBox(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(coveredImagePath),
-                        fit: BoxFit.none
-                    )
-                )
-            ));
-      } else {
-        card = new Container(
-            color: Colors.black45,
-            child: new Center (
-              child: new Text('',
-                style: TextStyle(fontWeight: FontWeight.bold),),
-            )
-        );
-      }
-    }
-    Widget outer = Container(
-      margin: EdgeInsets.all(4.0),
-      height: 90.0,
-      width: 90.0,
-      child: card,
-    );
-
-    return outer;
-  }
-}
