@@ -22,15 +22,19 @@ class HomeScreen extends StatelessWidget {
                   margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
                   child: Column(
                     children: <Widget>[
-                      Text(
-                        "DINO",
-                        textScaleFactor: 1.5,
-                        style: getTitleTextStyle(),
-                      ),
-                      Text(
-                        "MEMORY",
-                        textScaleFactor: 1.5,
-                        style: getTitleTextStyle(),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
+                        transform: Matrix4.identity()..setRotationZ(-0.0) , //-0.15
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.0),
+                          border: Border.all(color: Colors.brown, width: 5.0),
+                          color: Colors.white
+                        ),
+                        child: Text(
+                          "MEMORY",
+                          textScaleFactor: 1.1,
+                          style: getTitleTextStyle(),
+                        )
                       )
                     ],
                   )
@@ -50,7 +54,7 @@ class HomeScreen extends StatelessWidget {
     return Container(
       width: 200.0,
       height: 60.0,
-      margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 60.0),
+      margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 30.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0)),
