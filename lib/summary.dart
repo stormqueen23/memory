@@ -6,8 +6,9 @@ class Summary extends StatelessWidget {
   final int stars;
   final int points;
   final bool isLastLevel;
+  final bool failed;
 
-  Summary(this.stars, this.points, this.isLastLevel, {Key key})
+  Summary(this.failed, this.stars, this.points, this.isLastLevel, {Key key})
       : super(key: key);
 
   @override
@@ -16,7 +17,7 @@ class Summary extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text('Geschafft !', textScaleFactor: 1.5),
+        title: Text(failed ? 'Verloren!' : 'Geschafft !', textScaleFactor: 1.5),
         backgroundColor: Colors.green,
       ),
       body: Container(
@@ -85,13 +86,13 @@ class Summary extends StatelessWidget {
                           }),
                       IconButton(
                           icon: Icon(
-                            !isLastLevel ? Icons.fast_forward : Icons.home,
+                            !isLastLevel ? Icons.fast_forward : Icons.fast_forward,
                             color: Colors.brown,
                           ),
                           iconSize: 70.0,
                           padding: EdgeInsets.fromLTRB(30.0, 0.0, 0.0, 0.0),
                           onPressed: () {
-                            goToNextLevel(context);
+                            isLastLevel ? goToHome(context) : goToNextLevel(context);
                           })
                     ],
                   )

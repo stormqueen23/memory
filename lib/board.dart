@@ -6,6 +6,7 @@ import 'package:flutter/painting.dart';
 
 import 'package:memory/gameController.dart';
 import 'package:memory/boardUI.dart';
+import 'package:memory/memory_timer.dart';
 
 const int _timerMillis = 1500;
 const int max_rounds = 3;
@@ -22,6 +23,22 @@ class Board extends StatefulWidget {
   @override
   BoardState createState() {
     return new BoardState(difficulty, type);
+  }
+
+  static BoardState of(BuildContext context) {
+    final BoardState navigator = context.ancestorStateOfType(
+        const TypeMatcher<BoardState>());
+
+    assert(() {
+      if (navigator == null) {
+        throw new FlutterError(
+            'Operation requested with a context that does '
+                'not include a GameState.');
+      }
+      return true;
+    }());
+
+    return navigator;
   }
 }
 
@@ -57,9 +74,10 @@ class BoardState extends State<Board> {
 
   List<int> shuffeledNumbers;
 
+  MemoryTimer levelTimer;
+
   @override
   void initState() {
-
     resetBoard();
     super.initState();
   }
@@ -74,9 +92,15 @@ class BoardState extends State<Board> {
 
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text(
-            '$moves',
-            style: new TextStyle(fontSize: 30.0),
+          title: Column(
+            children: <Widget>[
+              /*
+              new Text(
+                '$moves',
+                style: new TextStyle(fontSize: 30.0),
+              ),*/
+              Center(child: levelTimer),
+            ],
           ),
           centerTitle: true,
           backgroundColor: Colors.green,
@@ -234,12 +258,15 @@ class BoardState extends State<Board> {
     if (difficulty == 1) {
       rows = 3;
       cols = 2;
+      levelTimer = MemoryTimer(seconds: 30);
     } else if (difficulty == 2) {
       rows = 4;
       cols = 3;
+      levelTimer = MemoryTimer(seconds: 60);
     } else if (difficulty == 3) {
       rows = 6;
       cols = 4;
+      levelTimer = MemoryTimer(seconds: 120);
     }
     turnedCards = 0;
     moves = 0;
@@ -293,6 +320,11 @@ class BoardState extends State<Board> {
     debugPrint('goToSummary');
     int stars = determineStars();
     GameController.of(context).goToSummary(stars, moves);
+  }
+
+  void goToFailSummary(BuildContext context) {
+    debugPrint('goToFailSummary');
+    GameController.of(context).goToFailSummary(0, moves);
   }
 
   int determineStars() {

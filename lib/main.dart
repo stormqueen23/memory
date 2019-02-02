@@ -17,9 +17,10 @@ class Memory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Dino-Memory',
+      title: 'Memory',
       theme: new ThemeData(
-          primarySwatch: Colors.brown
+          primarySwatch: Colors.brown,
+          fontFamily: 'Coiny',
       ),
       home: new HomeScreen(),
     );

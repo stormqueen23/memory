@@ -4,7 +4,7 @@ import 'board.dart';
 import 'home.dart';
 import 'summary.dart';
 
-enum ScreenType { game, highscore }
+enum ScreenType { game, highscore, failScore }
 enum MemoryType { first, second, third }
 
 class GameController extends StatefulWidget {
@@ -14,7 +14,7 @@ class GameController extends StatefulWidget {
   GameController(this.difficulty, {Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
+  State<GameController> createState() {
     return new GameState(difficulty);
   }
 
@@ -51,8 +51,10 @@ class GameState extends State<GameController> {
     debugPrint('buildGameController' + currentScreen.toString());
     if (ScreenType.game == currentScreen) {
       return new Board(difficulty, currentMemoryType);
+    } else if (ScreenType.failScore == currentScreen) {
+      return new Summary(true, lastStars, lastMoves, getNextMemoryType() == null);
     } else {
-      return new Summary(lastStars, lastMoves, getNextMemoryType() == null);
+      return new Summary(false, lastStars, lastMoves, getNextMemoryType() == null);
     }
   }
 
@@ -73,6 +75,15 @@ class GameState extends State<GameController> {
     lastMoves = moves;
     setState(() {
       currentScreen = ScreenType.highscore;
+    });
+  }
+
+  void goToFailSummary(int stars, int moves) {
+    debugPrint('goToFailSummary');
+    lastStars = stars;
+    lastMoves = moves;
+    setState(() {
+      currentScreen = ScreenType.failScore;
     });
   }
 
