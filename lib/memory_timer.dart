@@ -12,7 +12,6 @@ class MemoryTimer extends StatefulWidget {
   MemoryTimerState createState() {
     return new MemoryTimerState(seconds);
   }
-
 }
 
 class MemoryTimerState extends State<MemoryTimer> {
@@ -66,7 +65,7 @@ class MemoryTimerState extends State<MemoryTimer> {
             padding: EdgeInsets.all(1.0),
             child: new LinearPercentIndicator(
               width: MediaQuery.of(context).size.width - 150,
-              lineHeight: 25.0,
+              lineHeight: 15.0,
               animationDuration: 2500,
               percent: percent,
               center: Text(remainingTime.toString()),

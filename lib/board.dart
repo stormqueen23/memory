@@ -12,28 +12,25 @@ const int _timerMillis = 1500;
 const int max_rounds = 3;
 const int maxDinoCards = 15;
 
-
-
 class Board extends StatefulWidget {
   final int difficulty;
-  final MemoryType type;
+  //final MemoryType type;
 
-  Board(this.difficulty, this.type, {Key key}) : super(key: key);
+  Board(this.difficulty, {Key key}) : super(key: key);
 
   @override
   BoardState createState() {
-    return new BoardState(difficulty, type);
+    return new BoardState(difficulty);
   }
 
   static BoardState of(BuildContext context) {
-    final BoardState navigator = context.ancestorStateOfType(
-        const TypeMatcher<BoardState>());
+    final BoardState navigator =
+        context.ancestorStateOfType(const TypeMatcher<BoardState>());
 
     assert(() {
       if (navigator == null) {
-        throw new FlutterError(
-            'Operation requested with a context that does '
-                'not include a GameState.');
+        throw new FlutterError('Operation requested with a context that does '
+            'not include a GameState.');
       }
       return true;
     }());
@@ -47,15 +44,16 @@ class BoardState extends State<Board> {
   double height;
 
   final int difficulty;
-  final MemoryType selectedMemoryType;
+  //final MemoryType selectedMemoryType;
 
-  BoardState(this.difficulty, this.selectedMemoryType);
+  BoardState(this.difficulty);
 
   int rows = 1;
   int cols = 2;
 
   Timer timer;
 
+  int points = 0;
   int moves = 0;
   int minMoveCounter = 0;
 
@@ -82,6 +80,38 @@ class BoardState extends State<Board> {
     super.initState();
   }
 
+  AppBar getAppBar() {
+    //bool showText = result.preferredSize.height > 55;
+    AppBar result = doGetAppBar(true);
+    debugPrint("appBarSize: " + result.preferredSize.toString());
+    if (result.preferredSize.height < 56) {
+      result = doGetAppBar(false);
+      debugPrint("appBarSize: " + result.preferredSize.toString());
+    }
+    return result;
+  }
+
+  AppBar doGetAppBar(bool showDetails) {
+    AppBar result = new AppBar(
+      title: Column(
+        children: getAppBarDetails(showDetails),
+      ),
+      centerTitle: true,
+      backgroundColor: Colors.green,
+    );
+    return result;
+  }
+
+  List<Widget> getAppBarDetails(bool showDetailRow) {
+    List<Widget> result = <Widget>[];
+    result.add(Center(child: levelTimer));
+    if (showDetailRow) {
+      Text t = Text('Punkte: $points', style: new TextStyle(fontSize: 20.0));
+      result.add(t);
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
@@ -91,20 +121,7 @@ class BoardState extends State<Board> {
     debugPrint('height: ' + height.toString());
 
     return new Scaffold(
-        appBar: new AppBar(
-          title: Column(
-            children: <Widget>[
-              /*
-              new Text(
-                '$moves',
-                style: new TextStyle(fontSize: 30.0),
-              ),*/
-              Center(child: levelTimer),
-            ],
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.green,
-        ),
+        appBar: getAppBar(),
         body: new Container(
           child: buildBoardUI(cardSize),
         ));
@@ -118,7 +135,7 @@ class BoardState extends State<Board> {
     debugPrint('spaceForHeight ' + spaceForHeight.toString());
     debugPrint('spaceForWidth ' + spaceForWidth.toString());
 
-    double heightPerCard =  spaceForHeight / rows;
+    double heightPerCard = spaceForHeight / rows;
     double widthPerCard = spaceForWidth / cols;
     debugPrint('heightPerCard ' + heightPerCard.toString());
     debugPrint('widthPerCard ' + widthPerCard.toString());
@@ -150,7 +167,6 @@ class BoardState extends State<Board> {
                   posX: x,
                   posY: y,
                   size: cardSize,
-                  selectedMemoryType: selectedMemoryType,
                 ),
               ),
             ),
@@ -163,7 +179,6 @@ class BoardState extends State<Board> {
             posX: x,
             posY: y,
             size: cardSize,
-            selectedMemoryType: selectedMemoryType,
           ));
         }
       }
@@ -220,9 +235,13 @@ class BoardState extends State<Board> {
             if (firstValue == secondValue) {
               uiState[firstX][firstY] = TileState.found;
               uiState[secondX][secondY] = TileState.found;
+              points += 10;
             } else {
               uiState[firstX][firstY] = TileState.covered;
               uiState[secondX][secondY] = TileState.covered;
+              if (points > 0) {
+                points --;
+              }
             }
             moves++;
             firstValue = null;
@@ -244,6 +263,8 @@ class BoardState extends State<Board> {
             }
             //debugPrint('allfound: ' + allFound.toString());
             if (allFound) {
+              //int remaining = MemoryTimer.of(context).remainingTime;
+              //points += remaining;
               goToSummary(context);
             }
           }
@@ -262,11 +283,11 @@ class BoardState extends State<Board> {
     } else if (difficulty == 2) {
       rows = 4;
       cols = 3;
-      levelTimer = MemoryTimer(seconds: 60);
+      levelTimer = MemoryTimer(seconds: 90);
     } else if (difficulty == 3) {
       rows = 6;
       cols = 4;
-      levelTimer = MemoryTimer(seconds: 120);
+      levelTimer = MemoryTimer(seconds: 180);
     }
     turnedCards = 0;
     moves = 0;
@@ -319,12 +340,12 @@ class BoardState extends State<Board> {
   void goToSummary(BuildContext context) {
     debugPrint('goToSummary');
     int stars = determineStars();
-    GameController.of(context).goToSummary(stars, moves);
+    GameController.of(context).goToSummary(stars, moves, points);
   }
 
   void goToFailSummary(BuildContext context) {
     debugPrint('goToFailSummary');
-    GameController.of(context).goToFailSummary(0, moves);
+    GameController.of(context).goToFailSummary(0, moves, points);
   }
 
   int determineStars() {
@@ -342,5 +363,3 @@ class BoardState extends State<Board> {
     }
   }
 }
-
-

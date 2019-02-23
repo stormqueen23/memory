@@ -15,30 +15,22 @@ class MemoryCard extends StatelessWidget {
 
   final double size;
 
-  final MemoryType selectedMemoryType;
+  //final MemoryType selectedMemoryType;
 
   MemoryCard({this.tileState,
     this.value,
     this.posX,
     this.posY,
-    this.size,
-    this.selectedMemoryType});
+    this.size});
 
   @override
   @override
   Widget build(BuildContext context) {
     Widget card;
-    String pre;
+    String pre = 'assets/dino-';
     String imagePath;
     String coveredImagePath;
 
-    if (selectedMemoryType == MemoryType.first) {
-      pre = 'assets/dino-';
-    } else if (selectedMemoryType == MemoryType.second) {
-      pre = 'assets/dino-';
-    } else if (selectedMemoryType == MemoryType.third) {
-      pre = 'assets/dino-';
-    }
     if (pre != null) {
       //coveredImagePath = pre + 'back.png';
       imagePath = pre + value.toString() + '.png';

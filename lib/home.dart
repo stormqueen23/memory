@@ -3,34 +3,96 @@ import 'package:flutter/painting.dart';
 
 import 'gameController.dart';
 
+
+enum DialogType {ok}
+
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key key}) : super(key: key);
+
+  Future<void> showInfo(BuildContext context) async {
+    switch (await showDialog<DialogType>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: new Text('Infos'),
+          titlePadding: EdgeInsets.fromLTRB(24.0, 20.0, 0.0, 20.0),
+          contentPadding: EdgeInsets.fromLTRB(24.0, 10.0, 0.0, 0.0),
+          children: <Widget>[
+            Center(child: Text('Diese App wurde entwickelt von Melanie Siekmöller')),
+            // Dinosaurier: designed by Freepik from Flaticon
+            // Hintergrund: Graphics from pngtree.com
+            SimpleDialogOption (
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: IconButton(icon: Icon(Icons.check), onPressed: null)
+            )
+          ],
+        );
+      }
+    )
+
+    ) {
+      case DialogType.ok:
+        break;
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
           decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.transparent,
               image: DecorationImage(
                   image: AssetImage('assets/forest.png'),
                   fit: BoxFit.fitHeight)),
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                getInfoRow(context),
                 getTitle(),
-               // getLevelChange(),
+                // getLevelChange(),
                 getButton(context, 1),
                 getButton(context, 2),
                 getButton(context, 3)
               ],
             ),
-          )),
+          )
+      ),
     );
   }
-
+  
+  Padding getInfoRow(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15.0, 5.0, 0.0, 70.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          IconButton(
+              icon: Icon(Icons.settings, color: Colors.white),
+              iconSize: 30.0,
+              color: Colors.brown,
+              onPressed: () {
+                showInfo(context);
+              }),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
+            child: IconButton(
+                icon: Icon(Icons.info, color: Colors.white),
+                iconSize: 30.0,
+                onPressed: () {
+                  showInfo(context);
+                }),
+          ),
+        ],
+      ),
+    );
+  }
+  
   Container getTitle() {
     return Container(
         margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
@@ -73,8 +135,13 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           Column(
-            children: <Widget>[Text("DINO"
-                "", textScaleFactor: 3.0,)],
+            children: <Widget>[
+              Text(
+                "DINO"
+                    "",
+                textScaleFactor: 3.0,
+              )
+            ],
           ),
           Column(
             children: <Widget>[
@@ -82,9 +149,9 @@ class HomeScreen extends StatelessWidget {
                   child: RaisedButton(
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(70.0),
-                        side: BorderSide(width: 2.0, color: Colors.brown[200])
-                      ),
+                          borderRadius: new BorderRadius.circular(70.0),
+                          side:
+                              BorderSide(width: 2.0, color: Colors.brown[200])),
                       child: Icon(
                         Icons.arrow_right,
                         color: Colors.brown[800],
