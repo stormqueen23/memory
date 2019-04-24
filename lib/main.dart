@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'home.dart';
+import 'homeController.dart';
 
 void main() {
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
@@ -13,16 +13,28 @@ void main() {
 }
 
 class Memory extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'Memory',
-      theme: new ThemeData(
-          primarySwatch: Colors.brown,
-          fontFamily: 'Coiny',
+      theme: ThemeData(
+        primarySwatch: Colors.brown,
+        fontFamily: 'Coiny',
+        textTheme: TextTheme(
+          body1: TextStyle(
+            color: Colors.brown[800],
+          )
+        ),
+        primaryTextTheme: TextTheme(
+          body2: TextStyle(
+            color: Colors.yellow,
+          ),
+          body1: TextStyle(
+            color: Colors.brown[800],
+          )
+        )
       ),
-      home: new HomeScreen(),
+      home: HomeScreen(),
     );
   }
 }

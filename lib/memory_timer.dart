@@ -64,7 +64,7 @@ class MemoryTimerState extends State<MemoryTimer> {
         Padding(
             padding: EdgeInsets.all(1.0),
             child: new LinearPercentIndicator(
-              width: MediaQuery.of(context).size.width - 150,
+              width: MediaQuery.of(context).size.width - 110,
               lineHeight: 15.0,
               animationDuration: 2500,
               percent: percent,

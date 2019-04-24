@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 
+import 'package:memory/bloc/preferencesService.dart';
 import 'board.dart';
-import 'home.dart';
+import 'homeController.dart';
 import 'summary.dart';
 
 enum ScreenType { game, highscore, failScore, allHighScore }
-//enum MemoryType { first, second, third }
+
 
 class GameController extends StatefulWidget {
 
-  final int difficulty;
+  final GameData gameData;
 
-   GameController(this.difficulty, {Key key}) : super(key: key);
+   GameController(this.gameData);
 
   @override
   State<GameController> createState() {
-    return new GameState(difficulty, 3);
+    return new GameState();
   }
 
   static GameState of(BuildContext context) {
@@ -36,9 +37,6 @@ class GameController extends StatefulWidget {
 }
 
 class GameState extends State<GameController> {
-  final int difficulty;
-  final int maxGames;
-
   ScreenType currentScreen = ScreenType.game;
 
   int gameCounter = 0;
@@ -51,22 +49,37 @@ class GameState extends State<GameController> {
   int lastMoves = 0;
   int lastPoints = 0;
 
-  GameState(this.difficulty, this.maxGames);
+  GameState();
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint("initState");
+    debugPrint("maxGames = " + widget.gameData.maxGames.toString());
+    debugPrint("difficulty = " + widget.gameData.difficulty.toString());
+    debugPrint("showTimer = " + widget.gameData.showTimer.toString());
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     debugPrint('buildGameController' + currentScreen.toString());
+    int maxGames = widget.gameData.maxGames;
+
     if (ScreenType.game == currentScreen) {
-      return new Board(difficulty);
+      return new Board(gameCounter, widget.gameData);
     } else if (ScreenType.failScore == currentScreen) {
-      return new Summary(true, lastStars, lastMoves, lastPoints, isLastLevel(), false);
+      return new Summary(true, lastStars, lastMoves, lastPoints, isLastLevel(), false, widget.gameData.getBackgroundImage());
     } else if (ScreenType.allHighScore == currentScreen) {
       int tmpStars = (starSum / maxGames).round();
-      return new Summary(false, tmpStars, moveSum, pointSum, true, true);
+      return new Summary(false, tmpStars, moveSum, pointSum, true, true, widget.gameData.getBackgroundImage());
     } else {
-      return new Summary(false, lastStars, lastMoves, lastPoints, isLastLevel(), false);
+      return new Summary(false, lastStars, lastMoves, lastPoints, isLastLevel(), false, widget.gameData.getBackgroundImage());
     }
   }
+
+
 
   void goToHomeScreen() {
     debugPrint('goToHomeScreen');
@@ -74,8 +87,7 @@ class GameState extends State<GameController> {
     Navigator.pushReplacement(
         context,
         new MaterialPageRoute(
-            builder: (context) => new HomeScreen()
-        )
+            builder: (context) => new HomeScreen())
     );
   }
 
@@ -126,7 +138,7 @@ class GameState extends State<GameController> {
   }
 
   bool isLastLevel() {
-    return (gameCounter < (maxGames-1) ? false : true);
+    return (gameCounter < (widget.gameData.maxGames - 1) ? false : true);
   }
 
 }

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:memory/bloc/preferencesService.dart';
 
 import 'package:memory/gameController.dart';
 import 'package:memory/boardUI.dart';
@@ -10,17 +11,17 @@ import 'package:memory/memory_timer.dart';
 
 const int _timerMillis = 1500;
 const int max_rounds = 3;
-const int maxDinoCards = 15;
+
 
 class Board extends StatefulWidget {
-  final int difficulty;
-  //final MemoryType type;
+  final int currentGame;
+  final GameData gameData;
 
-  Board(this.difficulty, {Key key}) : super(key: key);
+  Board(this.currentGame, this.gameData, {Key key}) : super(key: key);
 
   @override
   BoardState createState() {
-    return new BoardState(difficulty);
+    return new BoardState();
   }
 
   static BoardState of(BuildContext context) {
@@ -40,13 +41,12 @@ class Board extends StatefulWidget {
 }
 
 class BoardState extends State<Board> {
+  //PreferencesService prefService;
+
+  BoardState();
+
   double width;
   double height;
-
-  final int difficulty;
-  //final MemoryType selectedMemoryType;
-
-  BoardState(this.difficulty);
 
   int rows = 1;
   int cols = 2;
@@ -104,10 +104,21 @@ class BoardState extends State<Board> {
 
   List<Widget> getAppBarDetails(bool showDetailRow) {
     List<Widget> result = <Widget>[];
-    result.add(Center(child: levelTimer));
+    if (widget.gameData.showTimer) {
+      result.add(Center(child: levelTimer));
+    } else {
+      result.add(Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 15)));
+    }
     if (showDetailRow) {
-      Text t = Text('Punkte: $points', style: new TextStyle(fontSize: 20.0));
-      result.add(t);
+      Row row = Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text('Punkte: $points', style: new TextStyle(fontSize: 20.0)),
+            Text('Level: ${widget.currentGame+1} von ${widget.gameData.maxGames}', style: new TextStyle(fontSize: 20.0)),
+            ]
+      );
+
+      result.add(row);
     }
     return result;
   }
@@ -167,6 +178,7 @@ class BoardState extends State<Board> {
                   posX: x,
                   posY: y,
                   size: cardSize,
+                  prefix: widget.gameData.getCardPrefix(),
                 ),
               ),
             ),
@@ -179,6 +191,7 @@ class BoardState extends State<Board> {
             posX: x,
             posY: y,
             size: cardSize,
+            prefix: widget.gameData.getCardPrefix(),
           ));
         }
       }
@@ -200,7 +213,7 @@ class BoardState extends State<Board> {
         decoration: BoxDecoration(
             color: Colors.white,
             image: DecorationImage(
-                image: AssetImage('assets/forest.png'),
+                image: AssetImage(widget.gameData.getBackgroundImage()),
                 fit: BoxFit.fitHeight,
                 colorFilter: ColorFilter.mode(
                     Colors.white.withOpacity(0.75), BlendMode.dstATop))),
@@ -224,10 +237,11 @@ class BoardState extends State<Board> {
           secondX = x;
           secondY = y;
         }
-        //debugPrint('first: ' + '$firstValue');
-        //debugPrint('second: ' + '$secondValue');
+        debugPrint('first: ' + '$firstValue');
+        debugPrint('second: ' + '$secondValue');
       }
     });
+    debugPrint("cards turned: " + turnedCards.toString());
     if (turnedCards == 2) {
       timer = new Timer(const Duration(milliseconds: _timerMillis), () {
         setState(() {
@@ -275,6 +289,7 @@ class BoardState extends State<Board> {
 
   void resetBoard() {
     debugPrint('resetBoard');
+    int difficulty = widget.gameData.difficulty;
     debugPrint('difficulty: ' + difficulty.toString());
     if (difficulty == 1) {
       rows = 3;
@@ -303,7 +318,7 @@ class BoardState extends State<Board> {
 
     int counter = 0;
     int number = 1;
-    shuffeledNumbers = new List<int>.generate(maxDinoCards, (i) => i + 1);
+    shuffeledNumbers = new List<int>.generate(widget.gameData.maxCardsOfType(), (i) => i + 1);
     List<int> numbers;
     numbers = new List<int>.generate(fields, (entry) {
       if (counter > 0 && counter % 2 == 0) {
@@ -352,14 +367,26 @@ class BoardState extends State<Board> {
     double cards = (rows * cols) / 2;
     double diff = (100 / cards) * (moves - cards);
     debugPrint('diff for stars: ' + diff.toString());
-    if (diff >= 0 && diff < 81) {
-      return 3;
-    } else if (diff >= 81 && diff < 150) {
-      return 2;
-    } else if (diff >= 150 && diff < 250) {
-      return 1;
+    if (widget.gameData.difficulty < 3) {
+      if (diff >= 0 && diff < 81) {
+        return 3;
+      } else if (diff >= 81 && diff < 150) {
+        return 2;
+      } else if (diff >= 150 && diff < 250) {
+        return 1;
+      } else {
+        return 0;
+      }
     } else {
-      return 0;
+      if (diff >= 0 && diff < 95) {
+        return 3;
+      } else if (diff >= 95 && diff < 200) {
+        return 2;
+      } else if (diff >= 200 && diff < 320) {
+        return 1;
+      } else {
+        return 0;
+      }
     }
   }
 }

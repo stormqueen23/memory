@@ -1,83 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
-import 'gameController.dart';
+import '../gameController.dart';
+import '../homeController.dart';
+import '../bloc/preferencesService.dart';
+
+enum DialogType { ok }
 
 
-enum DialogType {ok}
+class HomeWidget extends StatelessWidget {
+  final PreferencesService prefService;
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key key}) : super(key: key);
+  HomeWidget(this.prefService);
 
-  Future<void> showInfo(BuildContext context) async {
-    switch (await showDialog<DialogType>(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: new Text('Infos'),
-          titlePadding: EdgeInsets.fromLTRB(24.0, 20.0, 0.0, 20.0),
-          contentPadding: EdgeInsets.fromLTRB(24.0, 10.0, 0.0, 0.0),
-          children: <Widget>[
-            Center(child: Text('Diese App wurde entwickelt von Melanie Siekmöller')),
-            // Dinosaurier: designed by Freepik from Flaticon
-            // Hintergrund: Graphics from pngtree.com
-            SimpleDialogOption (
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: IconButton(icon: Icon(Icons.check), onPressed: null)
-            )
-          ],
-        );
-      }
-    )
+  void navigateTo(BuildContext context, int difficulty) {
+    int maxGames = prefService.maxGames;
+    bool showTimer = prefService.timerOn;
 
-    ) {
-      case DialogType.ok:
-        break;
-    }
+    GameData data = new GameData(difficulty, maxGames, showTimer, MemoryType.monster);
+    Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (context) => new GameController(data)));
+  }
 
+  void setEasy(BuildContext context) {
+    navigateTo(context, 1);
+  }
+
+  void setNormal(BuildContext context) {
+    navigateTo(context, 2);
+  }
+
+  void setHard(BuildContext context) {
+    navigateTo(context, 3);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-          decoration: BoxDecoration(
-              color: Colors.transparent,
-              image: DecorationImage(
-                  image: AssetImage('assets/forest.png'),
-                  fit: BoxFit.fitHeight)),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                getInfoRow(context),
-                getTitle(),
-                // getLevelChange(),
-                getButton(context, 1),
-                getButton(context, 2),
-                getButton(context, 3)
-              ],
-            ),
-          )
-      ),
+    return Column(
+      children: <Widget>[
+        getInfoRow(context),
+        getTitle(),
+        // getLevelChange(),
+        getButton(context, 1),
+        getButton(context, 2),
+        getButton(context, 3)
+      ],
     );
+
   }
-  
+
   Padding getInfoRow(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15.0, 5.0, 0.0, 70.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           IconButton(
               icon: Icon(Icons.settings, color: Colors.white),
               iconSize: 30.0,
               color: Colors.brown,
               onPressed: () {
-                showInfo(context);
+                showSettings(context);
               }),
           Padding(
             padding: const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
@@ -92,7 +77,7 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-  
+
   Container getTitle() {
     return Container(
         margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
@@ -151,7 +136,7 @@ class HomeScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(70.0),
                           side:
-                              BorderSide(width: 2.0, color: Colors.brown[200])),
+                          BorderSide(width: 2.0, color: Colors.brown[200])),
                       child: Icon(
                         Icons.arrow_right,
                         color: Colors.brown[800],
@@ -207,25 +192,35 @@ class HomeScreen extends StatelessWidget {
     return result;
   }
 
-  void navigateTo(BuildContext context, int difficulty) {
-    Navigator.push(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => new GameController(difficulty)));
+  Future<void> showInfo(BuildContext context) async {
+    switch (await showDialog<DialogType>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: new Text('Infos'),
+            titlePadding: EdgeInsets.fromLTRB(24.0, 20.0, 0.0, 20.0),
+            contentPadding: EdgeInsets.fromLTRB(24.0, 10.0, 0.0, 0.0),
+            children: <Widget>[
+              Center(
+                  child: Text(
+                      'Diese App wurde entwickelt von Melanie Siekmöller.')),
+              // Dinosaurier: designed by Freepik from Flaticon
+              // Hintergrund: Graphics from pngtree.com
+              SimpleDialogOption(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: IconButton(icon: Icon(Icons.check), onPressed: null))
+            ],
+          );
+        })) {
+      case DialogType.ok:
+        break;
+    }
   }
 
-  void setEasy(BuildContext context) {
-    navigateTo(context, 1);
-    //GameController.of(context).startGame(1);
-  }
-
-  void setNormal(BuildContext context) {
-    // GameController.of(context).startGame(2);
-    navigateTo(context, 2);
-  }
-
-  void setHard(BuildContext context) {
-    //GameController.of(context).startGame(3);
-    navigateTo(context, 3);
+  void showSettings(BuildContext context) {
+    HomeScreen.of(context).setDisplayTypePrefs();
   }
 }
+

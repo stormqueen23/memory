@@ -1,4 +1,19 @@
 Dinosaurier: designed by Freepik from Flaticon
+<div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
 Monster: designed by Smashicons from Flaticon
+<div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+Sea life:
+<div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 		    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 		    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+
+space: Image by Yuri_B from Pixabay
+wildlife: Image by Merio from Pixabay
+water: Image by M. Maggs from Pixabay
+jungle: Image by Jozef Cholp from Pixabay
+space-1: Image by OpenClipart-Vectors from Pixabay
+
 
 forest.png<a href="https://pngtree.com/">Graphics from pngtree.com</a>
+water: <a href=https://de.pngtree.com>Grafiken von pnpresse.com</a>

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:memory/gameController.dart';
 
 enum TileState { found, open, covered }
 
@@ -15,19 +14,19 @@ class MemoryCard extends StatelessWidget {
 
   final double size;
 
-  //final MemoryType selectedMemoryType;
+  final String prefix;
 
   MemoryCard({this.tileState,
     this.value,
     this.posX,
     this.posY,
-    this.size});
+    this.size,
+    this.prefix});
 
-  @override
   @override
   Widget build(BuildContext context) {
     Widget card;
-    String pre = 'assets/dino-';
+    String pre = prefix;
     String imagePath;
     String coveredImagePath;
 
@@ -40,15 +39,18 @@ class MemoryCard extends StatelessWidget {
       if (imagePath != null) {
         card = new Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.0),
+                borderRadius: BorderRadius.circular(15.0),
                 border: Border.all(
-                  color: Colors.brown,
+                  color: Colors.indigo,
                 ),
                 color: Colors.white),
-            child: new DecoratedBox(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(imagePath), fit: BoxFit.scaleDown))));
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: new DecoratedBox(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage(imagePath), fit: BoxFit.scaleDown))),
+            ));
       } else {
         card = new Container(
             color: Colors.white,
@@ -70,13 +72,20 @@ class MemoryCard extends StatelessWidget {
             color: Colors.grey,
             child: new DecoratedBox(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5.0),
+                    borderRadius: BorderRadius.circular(15.0),
                     image: DecorationImage(
                         image: AssetImage(coveredImagePath),
-                        fit: BoxFit.none))));
+                        fit: BoxFit.none)
+                )
+            )
+        );
       } else {
         card = new Container(
-            color: Colors.brown[400].withOpacity(0.95),
+
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              color: Colors.orange[300].withOpacity(0.95), //for dino
+            ),
             child: new Center(
               child: new Text(
                 '?',

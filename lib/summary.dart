@@ -9,8 +9,9 @@ class Summary extends StatelessWidget {
   final bool isLastLevel;
   final bool failed;
   final bool allSummary;
+  final String backgroundImage;
 
-  Summary(this.failed, this.stars, this.moves, this.points, this.isLastLevel, this.allSummary,
+  Summary(this.failed, this.stars, this.moves, this.points, this.isLastLevel, this.allSummary, this.backgroundImage,
       {Key key})
       : super(key: key);
 
@@ -20,14 +21,14 @@ class Summary extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text(failed ? 'Verloren!' : allSummary ? 'Übersicht' : 'Geschafft !', textScaleFactor: 1.5),
+        title: Text(failed ? 'Verloren!' : allSummary ? 'Insgesamt' : 'Geschafft !', textScaleFactor: 1.5),
         backgroundColor: Colors.green,
       ),
       body: Container(
         decoration: BoxDecoration(
             color: Colors.white,
             image: DecorationImage(
-                image: AssetImage('assets/forest.png'),
+                image: AssetImage(backgroundImage),
                 fit: BoxFit.fitHeight,
                 colorFilter: ColorFilter.mode(
                     Colors.white.withOpacity(0.75), BlendMode.dstATop))),
@@ -36,15 +37,6 @@ class Summary extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                child: allSummary ?
-                Text(
-                  'Insgesamt: ',
-                  textScaleFactor: 3.0,
-                  style: TextStyle(color: Colors.brown, fontWeight: FontWeight.bold),
-                ) : Text(''),
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
