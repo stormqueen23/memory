@@ -8,20 +8,25 @@ import '../bloc/preferencesService.dart';
 enum DialogType { ok }
 
 
-class HomeWidget extends StatelessWidget {
+class HomeWidget extends StatefulWidget {
   final PreferencesService prefService;
 
   HomeWidget(this.prefService);
 
-  void navigateTo(BuildContext context, int difficulty) {
-    int maxGames = prefService.maxGames;
-    bool showTimer = prefService.timerOn;
+  @override
+  _HomeWidgetState createState() => _HomeWidgetState();
+}
 
-    GameData data = new GameData(difficulty, maxGames, showTimer, MemoryType.monster);
+class _HomeWidgetState extends State<HomeWidget> {
+  void navigateTo(BuildContext context, int difficulty) {
+    int maxGames = widget.prefService.maxGames;
+    bool showTimer = widget.prefService.timerOn;
+
+    GameData data = new GameData(difficulty, maxGames, showTimer, widget.prefService.type);
     Navigator.push(
         context,
         new MaterialPageRoute(
-            builder: (context) => new GameController(data)));
+            builder: (context) => new GameController(gameData: data, prefService: widget.prefService)));
   }
 
   void setEasy(BuildContext context) {
@@ -38,29 +43,29 @@ class HomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        getInfoRow(context),
-        getTitle(),
-        // getLevelChange(),
-        getButton(context, 1),
-        getButton(context, 2),
-        getButton(context, 3)
-      ],
-    );
-
+   Widget home = Column(
+        children: <Widget>[
+          getInfoRow(context),
+          getTitle(),
+          getLevelChange(),
+          getButton(context, 1),
+          getButton(context, 2),
+          getButton(context, 3)
+        ],
+      );
+    return home;
   }
 
   Padding getInfoRow(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(15.0, 5.0, 0.0, 70.0),
+      padding: const EdgeInsets.fromLTRB(15.0, 5.0, 0.0, 40.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           IconButton(
               icon: Icon(Icons.settings, color: Colors.white),
               iconSize: 30.0,
-              color: Colors.brown,
+              color: Colors.black,
               onPressed: () {
                 showSettings(context);
               }),
@@ -80,7 +85,7 @@ class HomeWidget extends StatelessWidget {
 
   Container getTitle() {
     return Container(
-        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
+        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
         child: Column(
           children: <Widget>[
             Container(
@@ -88,7 +93,7 @@ class HomeWidget extends StatelessWidget {
                 transform: Matrix4.identity()..setRotationZ(-0.0), //-0.15
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30.0),
-                    border: Border.all(color: Colors.brown, width: 5.0),
+                    border: Border.all(color: Colors.black, width: 5.0),
                     color: Colors.white),
                 child: Text(
                   "MEMORY",
@@ -101,48 +106,18 @@ class HomeWidget extends StatelessWidget {
 
   Container getLevelChange() {
     return Container(
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 40),
       child: new Row(
         children: <Widget>[
           Column(
             children: <Widget>[
-              Container(
-                child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_left,
-                      color: Colors.brown[800],
-                    ),
-                    splashColor: Colors.brown,
-                    iconSize: 100.0,
-                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                    onPressed: () {}),
-                color: Colors.amber,
-              ),
+              getChangeSkin(false),
             ],
           ),
+
           Column(
             children: <Widget>[
-              Text(
-                "DINO"
-                    "",
-                textScaleFactor: 3.0,
-              )
-            ],
-          ),
-          Column(
-            children: <Widget>[
-              Container(
-                  child: RaisedButton(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(70.0),
-                          side:
-                          BorderSide(width: 2.0, color: Colors.brown[200])),
-                      child: Icon(
-                        Icons.arrow_right,
-                        color: Colors.brown[800],
-                        size: 80.0,
-                      ),
-                      onPressed: () {})),
+              getChangeSkin(true),
             ],
           )
         ],
@@ -167,7 +142,7 @@ class HomeWidget extends StatelessWidget {
         child: Text(
           text,
           textScaleFactor: 2.0,
-          style: TextStyle(color: Colors.brown[800]),
+          style: TextStyle(color: Colors.black),
         ),
         onPressed: () {
           if (diff == 1) {
@@ -187,7 +162,7 @@ class HomeWidget extends StatelessWidget {
         decoration: TextDecoration.none,
         fontWeight: FontWeight.w500,
         fontFamily: 'Coiny',
-        color: Colors.brown[800],
+        color: Colors.black,
         letterSpacing: 1.5);
     return result;
   }
@@ -219,8 +194,28 @@ class HomeWidget extends StatelessWidget {
     }
   }
 
+  Container getChangeSkin(bool rightWay) {
+    return Container(
+        child: RaisedButton(
+            color: Colors.transparent,
+            shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(70.0),
+                side:
+                BorderSide(width: 2.0, color: Colors.brown[200])),
+            child: Icon(
+              rightWay ? Icons.arrow_right : Icons.arrow_left,
+              color: Colors.black,
+              size: 80.0,
+            ),
+            onPressed: () {
+              HomeScreen.of(context).setState(() {
+                widget.prefService.changeSkin(rightWay);
+              });
+            })
+    );
+  }
+
   void showSettings(BuildContext context) {
     HomeScreen.of(context).setDisplayTypePrefs();
   }
 }
-

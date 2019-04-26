@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:memory/bloc/preferencesService.dart';
 
 import 'homeController.dart';
 
 void main() {
-  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
-    runApp(new Memory());
-  });
+  PreferencesService prefService = PreferencesService();
+  prefService.load().then((_) {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+        .then((_) {
+      runApp(new Memory(prefService));
+    });
+  }
+
+  );
+
 }
 
 class Memory extends StatelessWidget {
+  final PreferencesService prefService;
+
+  Memory(this.prefService);
+
   @override
   Widget build(BuildContext context) {
+    precacheImage(AssetImage('assets/jungle.jpg'), context);
+    precacheImage(AssetImage('assets/space-1.png'), context);
+    precacheImage(AssetImage('assets/water.png'), context);
     return MaterialApp(
       title: 'Memory',
       theme: ThemeData(
@@ -34,7 +48,7 @@ class Memory extends StatelessWidget {
           )
         )
       ),
-      home: HomeScreen(),
+      home: HomeScreen(prefService: prefService),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 
 import 'package:memory/widgets/preferences.dart';
 import 'package:memory/widgets/home.dart';
@@ -10,8 +9,13 @@ enum DialogType { ok }
 enum DisplayType { home, prefs }
 
 class HomeScreen extends StatefulWidget {
+
+  final PreferencesService prefService;
+
+  const HomeScreen({Key key, @required this.prefService}) : super(key: key);
+
   State<HomeScreen> createState() {
-    return HomeScreenState();
+   return HomeScreenState();
   }
 
   static HomeScreenState of(BuildContext context) {
@@ -31,15 +35,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  PreferencesService prefService;
   DisplayType display;
-  MemoryType selectedType = MemoryType.monster;
 
   @override
   void initState() {
     super.initState();
-    prefService = PreferencesService();
     display = DisplayType.home;
+
   }
 
   setDisplayTypeHome() {
@@ -56,22 +58,35 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Widget child = display == DisplayType.prefs
+        ? PreferencesWidget(widget.prefService)
+        : HomeWidget(widget.prefService);
+    return MemoryScaffold(child: child, memoryType: widget.prefService.type);
+  }
+}
+
+class MemoryScaffold extends StatelessWidget {
+  final Widget child;
+  final MemoryType memoryType;
+
+  MemoryScaffold({@required this.child, @required this.memoryType});
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-            decoration: BoxDecoration(
-                color: Colors.transparent,
-                image: DecorationImage(
-                    image: AssetImage(GameData.getBackgroundImageOfType(selectedType)),
-                    fit: BoxFit.fitHeight)),
-            child: Center(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    display == DisplayType.prefs
-                        ? PreferencesWidget(prefService)
-                        : HomeWidget(prefService),
-                  ]),
-            )));
+      body: Container(
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            image: DecorationImage(
+                image:
+                    AssetImage(GameData.getBackgroundImageOfType(memoryType)),
+                fit: BoxFit.fitHeight)),
+        child: Center(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[child]),
+        ),
+      ),
+    );
   }
 }

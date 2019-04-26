@@ -97,7 +97,7 @@ class BoardState extends State<Board> {
         children: getAppBarDetails(showDetails),
       ),
       centerTitle: true,
-      backgroundColor: Colors.green,
+      backgroundColor: widget.gameData.getAppBarColor(),
     );
     return result;
   }
@@ -179,6 +179,7 @@ class BoardState extends State<Board> {
                   posY: y,
                   size: cardSize,
                   prefix: widget.gameData.getCardPrefix(),
+                  cardColor: widget.gameData.getCardColor(),
                 ),
               ),
             ),
@@ -192,6 +193,7 @@ class BoardState extends State<Board> {
             posY: y,
             size: cardSize,
             prefix: widget.gameData.getCardPrefix(),
+            cardColor: widget.gameData.getCardColor(),
           ));
         }
       }

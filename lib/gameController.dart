@@ -11,8 +11,9 @@ enum ScreenType { game, highscore, failScore, allHighScore }
 class GameController extends StatefulWidget {
 
   final GameData gameData;
+  final PreferencesService prefService;
 
-   GameController(this.gameData);
+   GameController({this.gameData, this.prefService});
 
   @override
   State<GameController> createState() {
@@ -70,12 +71,12 @@ class GameState extends State<GameController> {
     if (ScreenType.game == currentScreen) {
       return new Board(gameCounter, widget.gameData);
     } else if (ScreenType.failScore == currentScreen) {
-      return new Summary(true, lastStars, lastMoves, lastPoints, isLastLevel(), false, widget.gameData.getBackgroundImage());
+      return new Summary(true, lastStars, lastMoves, lastPoints, isLastLevel(), false, widget.gameData.getBackgroundImage(), widget.gameData.getAppBarColor());
     } else if (ScreenType.allHighScore == currentScreen) {
       int tmpStars = (starSum / maxGames).round();
-      return new Summary(false, tmpStars, moveSum, pointSum, true, true, widget.gameData.getBackgroundImage());
+      return new Summary(false, tmpStars, moveSum, pointSum, true, true, widget.gameData.getBackgroundImage(), widget.gameData.getAppBarColor());
     } else {
-      return new Summary(false, lastStars, lastMoves, lastPoints, isLastLevel(), false, widget.gameData.getBackgroundImage());
+      return new Summary(false, lastStars, lastMoves, lastPoints, isLastLevel(), false, widget.gameData.getBackgroundImage(), widget.gameData.getAppBarColor());
     }
   }
 
@@ -87,7 +88,7 @@ class GameState extends State<GameController> {
     Navigator.pushReplacement(
         context,
         new MaterialPageRoute(
-            builder: (context) => new HomeScreen())
+            builder: (context) => new HomeScreen(prefService: widget.prefService,))
     );
   }
 

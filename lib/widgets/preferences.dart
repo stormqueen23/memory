@@ -37,9 +37,7 @@ class _PreferencesWidgetState extends State<PreferencesWidget> {
 
   Widget getPrefContainer(BuildContext context) {
 
-
     int _maxGames = widget.prefService.maxGames;
-    //bool _soundOn = widget.prefService.soundOn;
     bool _showTimer = widget.prefService.timerOn;
 
     double getContainerWidth() {

@@ -16,12 +16,15 @@ class MemoryCard extends StatelessWidget {
 
   final String prefix;
 
+  final Color cardColor;
+
   MemoryCard({this.tileState,
     this.value,
     this.posX,
     this.posY,
     this.size,
-    this.prefix});
+    this.prefix,
+    this.cardColor});
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +87,7 @@ class MemoryCard extends StatelessWidget {
 
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
-              color: Colors.orange[300].withOpacity(0.95), //for dino
+              color: cardColor.withOpacity(0.95), //for dino
             ),
             child: new Center(
               child: new Text(

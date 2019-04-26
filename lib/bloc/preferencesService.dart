@@ -41,6 +41,28 @@ class GameData {
     return 'assets/dino-';
   }
 
+  Color getAppBarColor() {
+    if (MemoryType.dino == selectedType) {
+      return Colors.green[400];
+    } else if (MemoryType.monster == selectedType) {
+      return Colors.orangeAccent;
+    } else if (MemoryType.sea == selectedType) {
+      return Colors.blueAccent;
+    }
+    return Colors.green;
+  }
+
+  Color getCardColor() {
+    if (MemoryType.dino == selectedType) {
+      return Colors.green[700];
+    } else if (MemoryType.monster == selectedType) {
+      return Colors.orange[700];
+    } else if (MemoryType.sea == selectedType) {
+      return Colors.blue[900];
+    }
+    return Colors.green[300];
+  }
+
   int maxCardsOfType() {
     if (MemoryType.dino == selectedType) {
       return maxDinoCards;
@@ -57,11 +79,12 @@ class GameData {
 class PreferencesService {
   static const MAX_GAMES = 'MAX_GAMES';
   static const SHOW_TIMER = 'SHOW_TIMER';
-  static const SOUND_ON = 'SOUND_ON';
+  static const MEMORY_TYPE = 'MEMORY_TYPE';
 
   static const DEFAULT_GAMES = 3;
   static const DEFAULT_TIMER = false;
   static const DEFAULT_SOUND = false;
+  static const DEFAULT_MEMORY_TYPE = 1;
 
   int _maxGames = 3;
   int get maxGames => _maxGames;
@@ -69,7 +92,7 @@ class PreferencesService {
   bool _timerOn = true;
   bool get timerOn => _timerOn;
 
-  MemoryType type = MemoryType.monster;
+  MemoryType type;
 
   PreferencesService() {
     load();
@@ -103,18 +126,69 @@ class PreferencesService {
     save();
   }
 
+  void changeSkin(bool rightWay) {
+    // Monster, Dino, Sea
+    debugPrint('change skin from ' + type.toString());
+    if (rightWay) {
+      if (type == MemoryType.monster) {
+        type = MemoryType.dino;
+      } else if (type == MemoryType.dino) {
+        type = MemoryType.sea;
+      } else if (type == MemoryType.sea) {
+        type = MemoryType.monster;
+      }
+    } else {
+      if (type == MemoryType.monster) {
+        type = MemoryType.sea;
+      } else if (type == MemoryType.sea) {
+        type = MemoryType.dino;
+      } else if (type == MemoryType.dino) {
+        type = MemoryType.monster;
+      }
+    }
+    debugPrint('to ' + type.toString());
+    //SharedPreferences prefs = await SharedPreferences.getInstance();
+    //
+  }
+
   Future<void> save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(MAX_GAMES, _maxGames);
     prefs.setBool(SHOW_TIMER, _timerOn);
+    int typeInt = getMemoryTypeAsInt(type);
+    prefs.setInt(MEMORY_TYPE, typeInt);
   }
 
   Future<void> load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _maxGames = prefs.getInt(MAX_GAMES) ?? DEFAULT_GAMES;
     _timerOn = prefs.getBool(SHOW_TIMER) ?? DEFAULT_TIMER;
-    //bool _soundOn = prefs.getBool(SHOW_TIMER) ?? DEFAULT_TIMER;
-   // _currentPrefs.add(PrefData(_maxGames, _soundOn, _showTimer));
+    int _typeInt = prefs.getInt(MEMORY_TYPE) ?? DEFAULT_MEMORY_TYPE;
+    type = getIntAsMemoryType(_typeInt);
+  }
+
+  int getMemoryTypeAsInt(MemoryType type) {
+    int result = 1;
+    if (type == MemoryType.monster) {
+      result = 1;
+    } else if (type == MemoryType.dino) {
+      result = 2;
+    } else if (type == MemoryType.sea) {
+      result = 3;
+    }
+    return result;
+  }
+
+  MemoryType getIntAsMemoryType(int value) {
+    MemoryType result = MemoryType.monster;
+    if (value == 1) {
+      result = MemoryType.monster;
+    } else if (value == 2) {
+      result = MemoryType.dino;
+    } else if (value == 3) {
+      result = MemoryType.sea;
+    }
+    return result;
   }
 
 }
