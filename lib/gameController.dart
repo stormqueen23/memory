@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:memory/bloc/preferencesService.dart';
+import 'package:memory/service/preferencesService.dart';
 import 'board.dart';
 import 'homeController.dart';
 import 'summary.dart';

@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:memory/bloc/preferencesService.dart';
+import 'package:memory/service/preferencesService.dart';
 
 import 'package:memory/gameController.dart';
 import 'package:memory/boardUI.dart';

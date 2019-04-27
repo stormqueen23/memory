@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:memory/widgets/preferences.dart';
 import 'package:memory/widgets/home.dart';
-import 'bloc/preferencesService.dart';
+import 'service/preferencesService.dart';
 
 enum DialogType { ok }
 

@@ -3,7 +3,7 @@ import 'package:flutter/painting.dart';
 
 import '../gameController.dart';
 import '../homeController.dart';
-import '../bloc/preferencesService.dart';
+import '../service/preferencesService.dart';
 
 enum DialogType { ok }
 

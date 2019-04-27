@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import '../bloc/preferencesService.dart';
+import '../service/preferencesService.dart';
 import '../homeController.dart';
 
 class PreferencesWidget extends StatefulWidget {
