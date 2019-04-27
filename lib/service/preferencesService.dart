@@ -20,25 +20,25 @@ class GameData {
 
   static String getBackgroundImageOfType(MemoryType type) {
     if (MemoryType.dino == type) {
-      return 'assets/jungle.jpg';
+      return 'assets/pics/jungle.jpg';
     } else if (MemoryType.monster == type) {
-      return 'assets/space-1.png';
+      return 'assets/pics/space-1.png';
     } else if (MemoryType.sea == type) {
-      return 'assets/water.png';
+      return 'assets/pics/water.png';
     }
     //default
-    return 'assets/jungle.jpg';
+    return 'assets/pics/jungle.jpg';
   }
 
   String getCardPrefix() {
     if (MemoryType.dino == selectedType) {
-      return 'assets/dino-';
+      return 'assets/pics/dino-';
     } else if (MemoryType.monster == selectedType) {
-      return 'assets/monster-';
+      return 'assets/pics/monster-';
     } else if (MemoryType.sea == selectedType) {
-      return 'assets/sea-';
+      return 'assets/pics/sea-';
     }
-    return 'assets/dino-';
+    return 'assets/pics/dino-';
   }
 
   Color getAppBarColor() {

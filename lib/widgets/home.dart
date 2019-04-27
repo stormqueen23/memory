@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 import '../gameController.dart';
 import '../homeController.dart';
@@ -96,7 +97,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     border: Border.all(color: Colors.black, width: 5.0),
                     color: Colors.white),
                 child: Text(
-                  "MEMORY",
+                  FlutterI18n.translate(context, "title"),
                   textScaleFactor: 3.1,
                   style: getTitleTextStyle(),
                 ))
@@ -130,7 +131,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     Color color = diff == 1
         ? Colors.green[200]
         : diff == 2 ? Colors.yellow[300] : Colors.red[300];
-    String text = diff == 1 ? 'Leicht' : diff == 2 ? 'Mittel' : 'Schwer';
+    String text = diff == 1 ? FlutterI18n.translate(context, "easy") : diff == 2 ? FlutterI18n.translate(context, "normal") : FlutterI18n.translate(context, "hard");
     return Container(
       width: 200.0,
       height: 60.0,
@@ -172,15 +173,13 @@ class _HomeWidgetState extends State<HomeWidget> {
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            title: new Text('Infos'),
+            title: new Text(FlutterI18n.translate(context, "infoDialog"),),
             titlePadding: EdgeInsets.fromLTRB(24.0, 20.0, 0.0, 20.0),
             contentPadding: EdgeInsets.fromLTRB(24.0, 10.0, 0.0, 0.0),
             children: <Widget>[
               Center(
                   child: Text(
-                      'Diese App wurde entwickelt von Melanie Siekmöller.')),
-              // Dinosaurier: designed by Freepik from Flaticon
-              // Hintergrund: Graphics from pngtree.com
+                    FlutterI18n.translate(context, "infoContent"),)),
               SimpleDialogOption(
                   onPressed: () {
                     Navigator.pop(context);

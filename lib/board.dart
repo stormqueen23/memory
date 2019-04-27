@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:memory/service/preferencesService.dart';
 
 import 'package:memory/gameController.dart';
@@ -113,8 +114,9 @@ class BoardState extends State<Board> {
       Row row = Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text('Punkte: $points', style: new TextStyle(fontSize: 20.0)),
-            Text('Level: ${widget.currentGame+1} von ${widget.gameData.maxGames}', style: new TextStyle(fontSize: 20.0)),
+
+            Text(FlutterI18n.translate(context, "points", Map.fromIterables(["points"], [points.toString()])), style: new TextStyle(fontSize: 20.0)),
+            Text(FlutterI18n.translate(context, "level", Map.fromIterables(["x", "y"], [(widget.currentGame+1).toString(), widget.gameData.maxGames.toString()])), style: new TextStyle(fontSize: 20.0)),
             ]
       );
 

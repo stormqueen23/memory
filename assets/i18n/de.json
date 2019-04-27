@@ -1,0 +1,16 @@
+{
+  "title": "MEMORY",
+  "easy": "Leicht",
+  "normal": "Mittel",
+  "hard": "Schwer",
+  "infoDialog": "Infos",
+  "infoContent":"TODO",
+  "preferencesTitle": "Einstellungen",
+  "maxGames": "Spiele pro Runde",
+  "showTimer": "Timer anzeigen",
+  "points": "Punkte: {points}",
+  "level": "Level: {x} von {y}",
+  "done": "Geschafft !",
+  "lost": "Verloren...",
+  "summary": "Insgesamt"
+}

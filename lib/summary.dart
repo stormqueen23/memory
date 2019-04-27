@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 import 'gameController.dart';
 
@@ -22,7 +23,7 @@ class Summary extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text(failed ? 'Verloren!' : allSummary ? 'Insgesamt' : 'Geschafft !', textScaleFactor: 1.5),
+        title: Text(failed ? FlutterI18n.translate(context,"lost") : allSummary ? FlutterI18n.translate(context,"summary") : FlutterI18n.translate(context,"done"), textScaleFactor: 1.5),
         backgroundColor: appBarColor,
       ),
       body: Container(
@@ -73,7 +74,7 @@ class Summary extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 20.0),
                 child: Text(
-                  'Punkte: ' + (points != 0 ? points.toString() : '0'),
+                    FlutterI18n.translate(context,"points", Map.fromIterables(["points"], [(points != 0 ? points.toString() : '0')])),
                   textScaleFactor: 3.0,
                   style:
                       TextStyle(color: Colors.black, fontWeight: FontWeight.bold),

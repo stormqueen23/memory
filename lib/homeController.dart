@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 import 'package:memory/widgets/preferences.dart';
 import 'package:memory/widgets/home.dart';
@@ -41,7 +42,6 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     display = DisplayType.home;
-
   }
 
   setDisplayTypeHome() {
@@ -58,6 +58,8 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Locale currentLang = FlutterI18n.currentLocale(context);
+    debugPrint("language: " + currentLang.toString());
     Widget child = display == DisplayType.prefs
         ? PreferencesWidget(widget.prefService)
         : HomeWidget(widget.prefService);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import '../service/preferencesService.dart';
 import '../homeController.dart';
 
@@ -68,7 +69,7 @@ class _PreferencesWidgetState extends State<PreferencesWidget> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 30.0),
               child: Text(
-                'Einstellungen',
+                  FlutterI18n.translate(context, "preferencesTitle"),
                 textScaleFactor: 2.0,
                 style: TextStyle(decoration: TextDecoration.underline),
               ),
@@ -84,7 +85,7 @@ class _PreferencesWidgetState extends State<PreferencesWidget> {
                       child: Container(
                           constraints: BoxConstraints(minWidth: 150),
                           child: Text(
-                            'Spiele pro Runde:',
+                            FlutterI18n.translate(context, "maxGames"),
                             textScaleFactor: 1.5,
                           )),
                     ),
@@ -93,7 +94,7 @@ class _PreferencesWidgetState extends State<PreferencesWidget> {
                       child: Container(
                           constraints: BoxConstraints(minWidth: 150),
                           child: Text(
-                            'Timer anzeigen',
+                            FlutterI18n.translate(context, "showTimer"),
                             textScaleFactor: 1.5,
                           )),
                     ),

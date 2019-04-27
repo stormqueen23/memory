@@ -1,0 +1,16 @@
+{
+  "title": "MEMORY",
+  "easy": "Easy",
+  "normal": "Normal",
+  "hard": "Hard",
+  "infoDialog": "Infos",
+  "infoContent":"TODO",
+  "preferencesTitle": "Preferences",
+  "maxGames": "Games per round",
+  "showTimer": "Show timer",
+  "points": "Points: {points}",
+  "level": "Level: {x} of {y}",
+  "done": "Done !",
+  "lost": "Lost...",
+  "summary": "Summary"
+}
