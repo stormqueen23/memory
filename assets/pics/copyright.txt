@@ -15,5 +15,3 @@ jungle: Image by Jozef Cholp from Pixabay
 space-1: Image by OpenClipart-Vectors from Pixabay
 
 
-forest.png<a href="https://pngtree.com/">Graphics from pngtree.com</a>
-water: <a href=https://de.pngtree.com>Grafiken von pnpresse.com</a>
